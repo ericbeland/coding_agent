@@ -9,9 +9,21 @@ end
 require "ruby_llm"
 require_relative "src/agent"
 
+
 RubyLLM.configure do |config|
-  config.anthropic_api_key = ENV.fetch("ANTHROPIC_API_KEY", nil)
-  config.default_model = "claude-3-7-sonnet"
+
+  # Ollama ignores the key but RubyLLM insists on *something* non-empty
+  config.openai_api_key  = ENV.fetch("OPENAI_API_KEY", "ollama")
+
+  # Point RubyLLM’s OpenAI client at Ollama’s /v1 adapter
+  config.openai_api_base = ENV.fetch("OPENAI_API_BASE",
+                                     "http://localhost:11434/v1")
+
+  # Optional – pick the model you just pulled
+   config.default_model = "devstral-14b-100k:latest"
+  #config.default_model = "qwen3:32b"
+  #config.default_model = "deepseek-r1:32b"
+
 end
 
 Agent.new.run

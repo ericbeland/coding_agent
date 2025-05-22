@@ -6,7 +6,13 @@ require_relative "tools/run_shell_command"
 
 class Agent
   def initialize
-    @chat = RubyLLM.chat
+    @chat = RubyLLM.chat(
+      provider: :openai,          # use the OpenAI dialect
+      model:    "devstral-14b-100k:latest",  # any model name that Ollama exposes
+      #  model:    "deepseek-r1:32b",
+      assume_model_exists: true   # skip the registry lookup
+    )
+
     @chat.with_tools(Tools::ReadFile, Tools::ListFiles, Tools::EditFile, Tools::RunShellCommand)
   end
 
